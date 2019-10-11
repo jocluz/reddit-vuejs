@@ -1,7 +1,7 @@
 <template>
   <div class="post-detail" v-if='model'>
     <h3 class='post-detail__author'>{{model.author}}</h3>
-    <img v-if='model.thumbnail' :src='model.thumbnail'/>
+    <img class='post-detail__img' v-if='model.thumbnail' :src='model.thumbnail'/>
     <span class='post-detail__title'>{{model.title}}</span>
     <a :href="model.url" target="_blank">Read more on {{ model.domain }}</a>
   </div>
@@ -28,5 +28,9 @@ export default {
   padding: 20px;
   position: relative;
   max-width: 500px;
+
+  &__img {
+    padding: 30px 0;
+  }
 }
 </style>

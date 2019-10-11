@@ -82,7 +82,7 @@ export default {
     .created {
       font-size: 14px;
       padding-left: 10px;
-    } 
+    }
   }
 
   &__content {
