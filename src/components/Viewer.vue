@@ -1,13 +1,25 @@
 <template>
   <div class="viewer">
     <div class='viewer__left'>
-      <Post v-for='post in items' :key='post.id' :model='post'
-          @readPost='onReadPost'
-          @dismissPost='onDismissPost'/>
-    </div>
+      <v-navigation-drawer
+        class='viewer__left__drawer__drawer'
+        v-model="drawer"
+        width='auto'
+        app>
+        <h2 class='viewer__left__drawer__title'>Reddit posts</h2>
 
-    <div class='viewer__right'>
-      <PostDetails v-if='selected' :model='selected' />
+        <transition-group class='viewer__left__drawer__list' name="list" tag="div">
+          <Post class='viewer__left__drawer__post'
+                v-for='post in items' :key='post.id'
+                :model='post'
+                @readPost='onReadPost'
+                @dismissPost='onDismissPost'/>
+        </transition-group>
+      </v-navigation-drawer>
+
+      <div class='viewer__right'>
+        <PostDetails v-if='selected' :model='selected'/>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +32,8 @@ export default {
 
   data () {
     return {
-      loading: false
+      loading: false,
+      drawer: null
     }
   },
 
@@ -62,22 +75,64 @@ export default {
 
 <style lang="scss">
 .viewer {
+  --viewer-background: #f5f5f5;
+  --title-color: #39c7c3;
+
   display: flex;
   min-height: 0;
   flex-grow: 1;
 
   &__left {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 30%;
-    max-width: 500px;
+    flex-grow: 1;
+
+    &__drawer {
+      &__title {
+        padding: 10px;
+        background-color: var(--title-color);
+        color: white;
+        height: 70px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+
+      &__list {
+        display: flex;
+        flex-direction: column;
+        flex-basis: 30%;
+        background-color: var(--viewer-background);
+        max-width: 400px;
+
+        &__post {
+          border-bottom: 1px solid white;
+          transition: all 1s;
+        }
+      }
+    }
   }
 
   &__right {
     display: flex;
-    flex-direction: column;
-    flex-grow: 1;
     flex-basis: 70%;
+    flex-grow: 1;
+    z-index: 1;
+    justify-content: center;
+  }
+
+  .list-enter-active, .list-leave-active {
+    transition: all .5s;
+  }
+  .list-enter, .list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  .v-navigation-drawer__content {
+    margin-top: 70px;
   }
 }
 

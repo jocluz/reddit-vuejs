@@ -27,5 +27,6 @@ export default {
   flex-grow: 1;
   padding: 20px;
   position: relative;
+  max-width: 500px;
 }
 </style>
