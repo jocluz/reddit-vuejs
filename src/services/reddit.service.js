@@ -2,7 +2,7 @@ import axios from 'axios'
 import { REDDIT_URL } from '../utils/constants'
 
 export async function getPosts (args) {
-  let url = `${REDDIT_URL}top.json`
+  let url = `${REDDIT_URL}top.json?limit=20`
   if (args.before) {
     url += `&before=${args.before}`
   }
@@ -10,10 +10,7 @@ export async function getPosts (args) {
     url += `&after=${args.after}`
   }
 
-  return axios({
-    method: 'get',
-    url
-  }).then(mapData)
+  return axios.get(url).then(mapData)
 }
 
 function mapData (response) {

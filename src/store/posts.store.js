@@ -32,6 +32,10 @@ export default {
     dismissPost (state, post) {
       state.selected = null
       delete state.items[post.id]
+    },
+    dismissAll (state) {
+      state.selected = null
+      state.items = {}
     }
   },
 

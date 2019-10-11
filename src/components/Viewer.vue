@@ -1,23 +1,28 @@
 <template>
   <div class="viewer">
-    <div class='viewer__left'>
+    <div class='viewer__container'>
       <v-navigation-drawer
-        class='viewer__left__drawer__drawer'
+        class='viewer__container__drawer'
         v-model="drawer"
         width='auto'
         app>
-        <h2 class='viewer__left__drawer__title'>Reddit posts</h2>
+        <h2 class='viewer__container__drawer__title'>Reddit posts</h2>
 
-        <transition-group class='viewer__left__drawer__list' name="list" tag="div">
-          <Post class='viewer__left__drawer__post'
+        <transition-group class='viewer__container__drawer__list' name="list" tag="div">
+          <Post class='viewer__container__drawer__post'
                 v-for='post in items' :key='post.id'
                 :model='post'
                 @readPost='onReadPost'
                 @dismissPost='onDismissPost'/>
         </transition-group>
+
+        <div class='viewer__container__drawer__footer'>
+          <v-btn bottom left absolute @click="loadMorePosts"> Load more </v-btn>
+          <v-btn bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
+        </div>
       </v-navigation-drawer>
 
-      <div class='viewer__right'>
+      <div class='viewer__container__selected'>
         <PostDetails v-if='selected' :model='selected'/>
       </div>
     </div>
@@ -33,6 +38,7 @@ export default {
   data () {
     return {
       loading: false,
+      loadingNext: false,
       drawer: null
     }
   },
@@ -52,7 +58,7 @@ export default {
 
   methods: {
     ...mapActions('posts', ['getPostsSlice']),
-    ...mapMutations('posts', ['readPost', 'dismissPost']),
+    ...mapMutations('posts', ['readPost', 'dismissPost', 'dismissAll']),
     loadPosts () {
       this.loading = true
       this.getPostsSlice()
@@ -68,6 +74,19 @@ export default {
     },
     onDismissPost (post) {
       this.dismissPost(post)
+    },
+    loadMorePosts () {
+      this.loadingNext = true
+      this.getPostsSlice()
+        .finally(() => {
+          this.loadingNext = false
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    dismissAllPosts () {
+      this.dismissAll()
     }
   }
 }
@@ -82,7 +101,16 @@ export default {
   min-height: 0;
   flex-grow: 1;
 
-  &__left {
+  &__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    color: var(--title-color);
+    font-size: 50px;
+  }
+
+  &__container {
     flex-grow: 1;
 
     &__drawer {
@@ -112,15 +140,24 @@ export default {
           transition: all 1s;
         }
       }
-    }
-  }
 
-  &__right {
-    display: flex;
-    flex-basis: 70%;
-    flex-grow: 1;
-    z-index: 1;
-    justify-content: center;
+      &__footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--title-color);
+        height: 70px;
+      }
+    }
+
+    &__selected {
+      display: flex;
+      flex-basis: 70%;
+      flex-grow: 1;
+      z-index: 1;
+      justify-content: center;
+    }
   }
 
   .list-enter-active, .list-leave-active {
@@ -132,6 +169,7 @@ export default {
   }
 
   .v-navigation-drawer__content {
+    margin-bottom: 70px;
     margin-top: 70px;
   }
 }
