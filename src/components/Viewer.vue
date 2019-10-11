@@ -1,6 +1,8 @@
 <template>
   <div class="viewer">
-    <div class='viewer__container'>
+    <i v-if="loading" class="viewer__loading fas fa-circle-notch fa-spin"></i>
+
+    <div class='viewer__container' v-else>
       <v-navigation-drawer
         class='viewer__container__drawer'
         v-model="drawer"
@@ -17,7 +19,15 @@
         </transition-group>
 
         <div class='viewer__container__drawer__footer'>
-          <v-btn bottom left absolute @click="loadMorePosts"> Load more </v-btn>
+          <v-btn :loading="loadingNext"
+                :disabled="loadingNext"
+                bottom left absolute
+                @click="loadMorePosts">
+                Load more
+            <template v-slot:loader>
+              <i class="fas fa-circle-notch fa-spin"></i>
+            </template>
+          </v-btn>
           <v-btn bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
         </div>
       </v-navigation-drawer>
@@ -112,6 +122,7 @@ export default {
 
   &__container {
     flex-grow: 1;
+    overflow: auto;
 
     &__drawer {
       &__title {
