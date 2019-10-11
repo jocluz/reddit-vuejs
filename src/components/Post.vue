@@ -12,7 +12,7 @@
       </v-btn>
     </div>
     <div class='post__content'>
-      <img v-if='model.thumbnail' :src='model.thumbnail'/>
+      <img v-if='withThumbnail' :src='model.thumbnail'/>
       <span class='title'>{{model.title}}</span>
     </div>
     <span class='post__comments'>{{model.num_comments}} comments</span>
@@ -20,8 +20,11 @@
 </template>
 
 <script>
+import postMixin from './post.mixin'
+
 export default {
   name: 'Post',
+  mixins: [postMixin],
   props: {
     model: {
       type: Object,
