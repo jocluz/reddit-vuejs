@@ -2,37 +2,38 @@
   <div class="viewer">
     <i v-if="loading" class="viewer__loading fas fa-circle-notch fa-spin"></i>
 
-    <div class='viewer__container' v-else>
-      <v-navigation-drawer
-        class='viewer__container__drawer'
-        v-model="drawer"
-        width='auto'
-        app>
-        <h2 class='viewer__container__drawer__title'>Reddit posts</h2>
+    <div class='viewer__left__content' v-else>
+      <aside class='viewer__left' >
+        <v-navigation-drawer
+          v-model="drawer"
+          width='auto'
+          app>
+          <h2 class='viewer__left__title'>Reddit posts</h2>
 
-        <transition-group class='viewer__container__drawer__list' name="list" tag="div">
-          <Post class='viewer__container__drawer__post'
-                v-for='post in items' :key='post.id'
-                :model='post'
-                @readPost='onReadPost'
-                @dismissPost='onDismissPost'/>
-        </transition-group>
+          <transition-group class='viewer__left__list' name="list" tag="div">
+            <Post class='viewer__left__post'
+                  v-for='post in items' :key='post.id'
+                  :model='post'
+                  @readPost='onReadPost'
+                  @dismissPost='onDismissPost'/>
+          </transition-group>
 
-        <div class='viewer__container__drawer__footer'>
-          <v-btn :loading="loadingNext"
-                :disabled="loadingNext"
-                bottom left absolute
-                @click="loadMorePosts">
-                Load more
-            <template v-slot:loader>
-              <i class="fas fa-circle-notch fa-spin"></i>
-            </template>
-          </v-btn>
-          <v-btn bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
-        </div>
-      </v-navigation-drawer>
+          <div class='viewer__left__footer'>
+            <v-btn :loading="loadingNext"
+                  :disabled="loadingNext"
+                  bottom left absolute
+                  @click="loadMorePosts">
+                  Load more
+              <template v-slot:loader>
+                <i class="fas fa-circle-notch fa-spin"></i>
+              </template>
+            </v-btn>
+            <v-btn bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
+          </div>
+        </v-navigation-drawer>
+      </aside>
 
-      <div class='viewer__container__selected'>
+      <div class='viewer__right' v-touch="touch">
         <PostDetails v-if='selected' :model='selected'/>
       </div>
     </div>
@@ -49,7 +50,10 @@ export default {
     return {
       loading: false,
       loadingNext: false,
-      drawer: null
+      drawer: null,
+      touch: {
+        right: () => this.toggle()
+      }
     }
   },
 
@@ -97,6 +101,9 @@ export default {
     },
     dismissAllPosts () {
       this.dismissAll()
+    },
+    toggle () {
+      this.drawer = !this.drawer
     }
   }
 }
@@ -120,55 +127,60 @@ export default {
     font-size: 50px;
   }
 
-  &__container {
-    flex-grow: 1;
+  &__left {
     overflow: auto;
 
-    &__drawer {
-      &__title {
-        padding: 10px;
-        background-color: var(--title-color);
-        color: white;
-        height: 70px;
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-      }
-
-      &__list {
-        display: flex;
-        flex-direction: column;
-        flex-basis: 30%;
-        background-color: var(--viewer-background);
-        max-width: 400px;
-
-        &__post {
-          border-bottom: 1px solid white;
-          transition: all 1s;
-        }
-      }
-
-      &__footer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: var(--title-color);
-        height: 70px;
-      }
+    @include xl {
+      width: 400px;
     }
 
-    &__selected {
+    &__content {
       display: flex;
-      flex-basis: 70%;
       flex-grow: 1;
-      z-index: 1;
-      justify-content: center;
+      min-height: 0;
     }
+
+    &__title {
+      padding: 10px;
+      background-color: var(--title-color);
+      color: white;
+      height: 70px;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--viewer-background);
+      max-width: 400px;
+
+      &__post {
+        border-bottom: 1px solid white;
+        transition: all 1s;
+      }
+    }
+
+    &__footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--title-color);
+      height: 70px;
+    }
+  }
+
+  &__right {
+    display: flex;
+    flex-grow: 1;
+    z-index: 1;
+    justify-content: center;
   }
 
   .list-enter-active, .list-leave-active {
@@ -176,7 +188,7 @@ export default {
   }
   .list-enter, .list-leave-to {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(-30px);
   }
 
   .v-navigation-drawer__content {

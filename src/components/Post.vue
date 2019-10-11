@@ -12,7 +12,7 @@
       </v-btn>
     </div>
     <div class='post__content'>
-      <img v-if='withThumbnail' :src='model.thumbnail'/>
+      <img class='img' v-if='withThumbnail' :src='model.thumbnail'/>
       <span class='title'>{{model.title}}</span>
     </div>
     <span class='post__comments'>{{model.num_comments}} comments</span>
@@ -95,6 +95,10 @@ export default {
 
     .title {
       padding-left: 10px;
+    }
+
+    .img {
+      max-width: 100px;
     }
   }
 
