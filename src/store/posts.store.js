@@ -6,12 +6,16 @@ export default {
   state: {
     items: {},
     after: null,
-    before: null
+    before: null,
+    selected: null
   },
 
   getters: {
     items (state) {
       return state.items
+    },
+    selected (state) {
+      return state.selected
     }
   },
 
@@ -20,6 +24,14 @@ export default {
       state.before = posts.before
       state.after = posts.after
       state.items = Object.assign({}, state.items, posts.children)
+    },
+    readPost (state, post) {
+      post.visited = true
+      state.selected = post
+    },
+    dismissPost (state, post) {
+      state.selected = null
+      delete state.items[post.id]
     }
   },
 

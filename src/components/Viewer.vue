@@ -1,17 +1,19 @@
 <template>
   <div class="viewer">
     <div class='viewer__left'>
-      <Post v-for='post in items' :key='post.id' :model='post'/>
+      <Post v-for='post in items' :key='post.id' :model='post'
+          @readPost='onReadPost'
+          @dismissPost='onDismissPost'/>
     </div>
 
     <div class='viewer__right'>
-      
+      <PostDetails v-if='selected' :model='selected' />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'Viewer',
@@ -23,11 +25,12 @@ export default {
   },
 
   components: {
-    Post: () => import('./Post.vue')
+    Post: () => import('./Post.vue'),
+    PostDetails: () => import('./PostDetails.vue')
   },
 
   computed: {
-    ...mapGetters('posts', ['items'])
+    ...mapGetters('posts', ['items', 'selected'])
   },
 
   created () {
@@ -36,6 +39,7 @@ export default {
 
   methods: {
     ...mapActions('posts', ['getPostsSlice']),
+    ...mapMutations('posts', ['readPost', 'dismissPost']),
     loadPosts () {
       this.loading = true
       this.getPostsSlice()
@@ -45,6 +49,12 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    onReadPost (post) {
+      this.readPost(post)
+    },
+    onDismissPost (post) {
+      this.dismissPost(post)
     }
   }
 }

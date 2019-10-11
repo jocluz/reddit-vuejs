@@ -27,10 +27,10 @@ export default {
   },
   methods: {
     dismiss () {
-      // dismiss
+      this.$emit('dismissPost', this.model)
     },
     read () {
-      // read
+      this.$emit('readPost', this.model)
     }
   }
 }
@@ -48,7 +48,7 @@ export default {
     width: 15px;
     height: 15px;
     position: absolute;
-    top: 30px;
+    top: 25px;
   }
 
   &__arrow {
