@@ -5,7 +5,7 @@
     <div class='post__header'>
       <div>
         <span class='author'>{{model.author}}</span>
-        <span class='created'>{{model.created_utc}}</span>
+        <span class='created'>{{model.created_utc | timesAgo}}</span>
       </div>
       <v-btn  text ligth @click='dismiss'>
         <i class='fas fa-trash'></i>
