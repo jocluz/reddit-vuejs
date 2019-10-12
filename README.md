@@ -2,6 +2,7 @@
 
 ## Notes
 
+```
 1- Init application using Vue CLI 3.12.0 (vue ui), with vuex and vue-router.
 2- Created custom layout using flexbox.
 3- Imported two components and one directive from Vuetify lib.
@@ -12,6 +13,7 @@
 8- Imported components and css dynamically for bundle lazy loading.
 9- Used fontawesome to show some icons.
 10- Added moment to show *x times ago*.
+```
 
 ## Deployed
 
