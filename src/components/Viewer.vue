@@ -3,10 +3,11 @@
     <i v-if="loading" class="viewer__loading fas fa-circle-notch fa-spin"></i>
 
     <div class='viewer__left__content' v-else>
-      <aside class='viewer__left' >
+      <aside class='viewer__left'>
         <v-navigation-drawer
           v-model="drawer"
           width='auto'
+          v-if='hasPosts'
           app>
           <h2 class='viewer__left__title'>Reddit posts</h2>
 
@@ -22,19 +23,21 @@
             <v-btn :loading="loadingNext"
                   :disabled="loadingNext"
                   bottom left absolute
+                  class='bottom-btns'
                   @click="loadMorePosts">
                   Load more
               <template v-slot:loader>
                 <i class="fas fa-circle-notch fa-spin"></i>
               </template>
             </v-btn>
-            <v-btn bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
+            <v-btn class='bottom-btns' bottom right absolute @click='dismissAllPosts'>Dismiss All</v-btn>
           </div>
         </v-navigation-drawer>
       </aside>
 
       <div class='viewer__right' v-touch="touch">
         <PostDetails v-if='selected' :model='selected'/>
+        <h2 class='show-mobile' v-if='showEmptyState'>Slide right to see the posts...</h2>
       </div>
     </div>
   </div>
@@ -63,7 +66,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters('posts', ['items', 'selected'])
+    ...mapGetters('posts', ['items', 'selected']),
+    showEmptyState () {
+      return !this.selected && this.hasPosts
+    },
+    hasPosts () {
+      return this.items && Object.keys(this.items).length
+    }
   },
 
   created () {
@@ -148,10 +157,6 @@ export default {
       align-items: center;
       justify-content: center;
       display: flex;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
     }
 
     &__list {
@@ -165,15 +170,6 @@ export default {
         transition: all 1s;
       }
     }
-
-    &__footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: var(--title-color);
-      height: 70px;
-    }
   }
 
   &__right {
@@ -181,6 +177,16 @@ export default {
     flex-grow: 1;
     z-index: 1;
     justify-content: center;
+
+    .show-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @include xl {
+        display: none;
+      }
+    }
   }
 
   .list-enter-active, .list-leave-active {
@@ -191,9 +197,14 @@ export default {
     transform: translateX(-30px);
   }
 
-  .v-navigation-drawer__content {
-    margin-bottom: 70px;
-    margin-top: 70px;
+  .bottom-btns {
+    background-color: var(--title-color) !important;
+    color: white !important;
+    bottom: 50px !important;
+
+    @include xl {
+      bottom: 20px !important;
+    }
   }
 }
 
